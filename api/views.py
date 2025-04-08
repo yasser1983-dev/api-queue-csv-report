@@ -9,17 +9,29 @@ from api.tasks import generate_reports_task
 
 
 class ReportViewSet(viewsets.ViewSet):
-    @action(detail=False, methods=['post'])
+    @action(detail=False, methods=['get'])
     def generate_reports(self, request):
-        date_report = request.data.get("fecha")
+        """
+        Handles the GET request to generate reports.
 
-        # Validar formato de fecha
+        This method validates the provided date, enqueues the report generation
+        task using django_rq, and returns a response indicating the status.
+
+        Args:
+            request (Request): The HTTP request object containing the date in the body.
+
+        Returns:
+            Response: A JSON response indicating success or an error message.
+        """
+        date_report = request.query_params.get("fecha")
+
+        # Validate date format
         try:
             datetime.strptime(date_report, "%Y-%m-%d")
         except ValueError:
             return Response({"error": "Formato de fecha inválido. Usa YYYY-MM-DD"}, status=400)
 
-        # Encolar tarea asíncrona con django_rq
+        # Enqueue asynchronous tasks with django_rq
         queue = get_queue('default')  # o el nombre que uses en settings.py
         #queue.enqueue(generate_reports_task, date_report)
         generate_reports_task(date_report)
