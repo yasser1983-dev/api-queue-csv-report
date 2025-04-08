@@ -8,7 +8,7 @@ class TASMSMAESTRO(models.Model):
         db_table = "TA_SMS_MAESTRO"
 
     def __str__(self):
-        return f"{self.name} ({self.date})"
+        return f"{self.name} ({self.date_report})"
 
 
 class TASMSDETALLE(models.Model):
