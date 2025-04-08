@@ -10,6 +10,10 @@ Usa actions/checkout para obtener el código fuente.
 ```
 ### Configurar el pipeline de Github para despliegue
   Ir al archivo deploy.yml y configurar las variables de entorno necesarias para el despliegue automático del proyecto.
+    - `SERVER_HOST`: Dirección IP del servidor donde se desplegará el proyecto.
+    - `SERVER_USER`: Usuario del servidor donde se desplegará el proyecto.
+    - `SERVER_SSH_KEY`: Llave SSH para acceder al servidor.
+
 
 ### Desplegar el proyecto
   Para desplegar el proyecto, se debe ejecutar el siguiente comando en la terminal:
