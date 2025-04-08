@@ -8,29 +8,16 @@ Usa actions/checkout para obtener el código fuente.
 ```bash
     git clone git@github.com:yasser1983-dev/api-queue-csv-report.git
 ```
-### 2 Configurar Python
-Instala Python y las dependencias necesarias desde requirements.txt.
+### Configurar el pipeline de Github para despliegue
+  Ir al archivo deploy.yml y configurar las variables de entorno necesarias para el despliegue automático del proyecto.
+
+### Desplegar el proyecto
+  Para desplegar el proyecto, se debe ejecutar el siguiente comando en la terminal:
 ```bash
-  pip install -r requirements.txt
+  gh auth login
+  gh workflow run deploy.yml
 ```
 
-### 3 Construir y publicar la imagen Docker
-Construye la imagen Docker utilizando docker compose definido en docker-compose.yml y publica la imagen en Docker Hub.
-```bash
-  docker-compose up -d
-```
-
-### 4 Desplegar en el servidor
-
-Usa ssh-action para conectarte al servidor, actualizar la imagen y reiniciar los servicios con docker-compose.
-
-
-## Requisitos para ejecutar el proyecto manualmente o localmente
-
-### Correr el worker
-```bash
-  python manage.py rqworker
-```
 
 ### Levantar los servicios de base de datos y Redis con Docker
 ```bash
@@ -65,3 +52,8 @@ Generar datos falsos en las tablas de las base de datos utilizando el siguiente 
   python populate_db.py
 ```
 
+### Ejecutar las pruebas
+
+```bash
+  python manage.py test
+```
