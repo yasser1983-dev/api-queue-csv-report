@@ -1,0 +1,43 @@
+name: Deploy Django App
+
+on:
+  push:
+    branches:
+      - main  # Despliega cuando se haga push a la rama principal
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # 1. Clonar el repositorio
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    # 2. Configurar Python
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    # 3. Instalar dependencias
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    # 4. Configurar Docker
+    - name: Build and push Docker image
+      run: |
+        docker build -t django-app:latest .
+
+    # 5. Desplegar en el servidor
+    - name: Deploy to server
+      uses: appleboy/ssh-action@v0.1.8
+      with:
+        host: ${{ secrets.SERVER_HOST }}
+        username: ${{ secrets.SERVER_USER }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
+        script: |
+          docker-compose down
+          docker-compose up -d
