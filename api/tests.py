@@ -1,3 +1,6 @@
+import csv
+import os
+import tempfile
 import unittest
 from unittest.mock import patch
 
@@ -74,3 +77,34 @@ class TestTasks(unittest.TestCase):
             ('mensaje1', 'destinatario1'),
             ('mensaje2', 'destinatario2')
         ])
+
+    def test_write_campaign_csv_real_file(self):
+        camp_id = 1
+
+        # Generador con datos reales
+        def data_gen():
+            yield [('mensaje1', 'destinatario1'), ('mensaje2', 'destinatario2')]
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            # Cambia el working directory temporalmente para guardar el archivo ahí
+            current_dir = os.getcwd()
+            os.chdir(temp_dir)
+
+            try:
+                write_campaign_csv(camp_id, data_gen())
+
+                expected_file = f'report_{camp_id}.csv'
+                self.assertTrue(os.path.exists(expected_file))
+
+                # Validamos el contenido del archivo CSV
+                with open(expected_file, newline='') as f:
+                    reader = list(csv.reader(f))
+                    self.assertEqual(reader[0], ['mensaje', 'destinatario'])
+                    self.assertEqual(reader[1:], [
+                        ['mensaje1', 'destinatario1'],
+                        ['mensaje2', 'destinatario2']
+                    ])
+            finally:
+                # Volvemos al directorio original
+                os.chdir(current_dir)
+
