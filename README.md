@@ -8,12 +8,24 @@ Usa actions/checkout para obtener el código fuente.
 ```bash
     git clone git@github.com:yasser1983-dev/api-queue-csv-report.git
 ```
-### Configurar el pipeline de Github para despliegue
+### 2 Configurar el pipeline de Github para despliegue
   Ir al archivo deploy.yml y configurar las variables de entorno necesarias para el despliegue automático del proyecto.
     - `SERVER_HOST`: Dirección IP del servidor donde se desplegará el proyecto.
     - `SERVER_USER`: Usuario del servidor donde se desplegará el proyecto.
     - `SERVER_SSH_KEY`: Llave SSH para acceder al servidor.
 
+### 3 Ejecución Manual
+a. Ir a l repositorio en GitHub
+
+b. Haz clic en la pestaña "Actions"
+
+c. Busca el workflow
+
+d. Haz clic en el botón "Run workflow"
+
+e.Selecciona la rama (por ejemplo: main)
+
+f. Dale a "Run workflow"
 
 ### Desplegar el proyecto
   Para desplegar el proyecto, se debe ejecutar el siguiente comando en la terminal:
