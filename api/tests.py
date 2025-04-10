@@ -1,4 +1,3 @@
-import csv
 import unittest
 from unittest.mock import patch
 
@@ -25,6 +24,33 @@ class TestTasks(unittest.TestCase):
             "SELECT * FROM get_campaign_details(%s, %s, %s)", [1, 0, 100]
         )
 
+    def test_get_campaigns_real_db(self):
+        # Estos valores deben existir en tu base de datos de pruebas
+        date_report = '2025-04-08'
+        result = get_campaigns(date_report)
+
+        # Asegurar de que devuelva una lista
+        self.assertIsInstance(result, list)
+
+        # Si hay datos, que sean tuplas
+        if result:
+            self.assertIsInstance(result[0], tuple)
+
+    def test_get_campaign_details_real_db(self):
+        # Estos valores deben existir en tu base de datos de pruebas
+        camp_id = 1
+        offset = 0
+        batch_size = 100
+
+        result = get_campaign_details(camp_id, offset, batch_size)
+
+        # Asegúrar que devuelva una lista
+        self.assertIsInstance(result, list)
+
+        # Si hay datos, que sean tuplas
+        if result:
+            self.assertIsInstance(result[0], tuple)
+
     @patch('api.tasks.csv.writer')
     @patch('builtins.open', new_callable=unittest.mock.mock_open)
     def test_write_campaign_csv(self, mock_open, mock_csv_writer):
@@ -32,14 +58,19 @@ class TestTasks(unittest.TestCase):
         mock_csv_writer.return_value = mock_writer_instance
 
         camp_id = 1
-        rows = [('mensaje1', 'destinatario1'), ('mensaje2', 'destinatario2')]
-        write_campaign_csv(camp_id, rows)
 
-        # Verifica que se abre el archivo correctamente
+        # Generador devuelve un único lote (una lista de tuplas)
+        def mock_data_gen():
+            yield [('mensaje1', 'destinatario1'), ('mensaje2', 'destinatario2')]
+
+        write_campaign_csv(camp_id, mock_data_gen())
+
         mock_open.assert_called_with('report_1.csv', 'w', newline='')
 
-        # Verifica que se escribió el encabezado
         mock_writer_instance.writerow.assert_called_with(['mensaje', 'destinatario'])
 
-        # Verifica que se escribieron las filas
-        mock_writer_instance.writerows.assert_called_with(rows)
+        # ✅ Aquí debe coincidir con lo que generaste
+        mock_writer_instance.writerows.assert_called_with([
+            ('mensaje1', 'destinatario1'),
+            ('mensaje2', 'destinatario2')
+        ])

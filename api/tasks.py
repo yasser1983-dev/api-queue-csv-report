@@ -49,7 +49,9 @@ def write_campaign_csv(camp_id, data_generator):
         writer = csv.writer(csvfile)
         writer.writerow(['mensaje', 'destinatario'])
         for batch in data_generator:
-            writer.writerows(batch)
+            if isinstance(batch, list) or isinstance(batch, tuple):
+                writer.writerows(batch)  # batch debe ser iterable de filas
+
 
 def generate_reports_task(date_report):
     """
